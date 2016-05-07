@@ -15,7 +15,7 @@ public class AccelerometerManager implements SensorEventListener {
     private static final String TAG = "AccelerometerManager";
 
     private final int DATA_SIZE = 512;
-    private VibrationData<Float> mVibrationData;
+    private VibrationData mVibrationData;
 
     public AccelerometerManager(SensorManager manager) {
         List<Sensor> sensors = manager.getSensorList(Sensor.TYPE_ACCELEROMETER);
@@ -23,7 +23,7 @@ public class AccelerometerManager implements SensorEventListener {
             manager.registerListener(this, sensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
         }
 
-        mVibrationData = new VibrationData<Float>(DATA_SIZE);
+        mVibrationData = new VibrationData(DATA_SIZE);
     }
 
     public void stopSensor(SensorManager manager) {

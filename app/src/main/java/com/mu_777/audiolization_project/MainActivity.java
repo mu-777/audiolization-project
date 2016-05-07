@@ -107,7 +107,6 @@ public class MainActivity extends ActionBarActivity {
                     double[] accelDataList;
                     accelDataList = mAccelerometerManager.getAccelerometerDataList();
 //                    Log.d(TAG, Double.toString(accelDataList[0]));
-                    Log.d(TAG, "test");
 
                 }
 
