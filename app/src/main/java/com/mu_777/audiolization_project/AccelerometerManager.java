@@ -34,12 +34,16 @@ public class AccelerometerManager implements SensorEventListener {
         manager = null;
     }
 
+    private double filter(float[] vals) {
+        float gx = vals[0];
+        float gy = vals[1];
+        float gz = vals[2];
+        return Math.sqrt(gx * gx + gy * gy + gz * gz);
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
-
-        mVibrationData.add(event.values[2]);
-//        gx = event.values[0];
-//        gy = event.values[1];
+        mVibrationData.add(filter(event.values));
     }
 
     @Override

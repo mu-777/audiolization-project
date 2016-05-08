@@ -15,24 +15,25 @@ public class VibrationData {
     private ArrayList<Double> mData = new ArrayList<Double>();
     private int mMaxSize = 1024;
 
+
     public VibrationData() {
-        super();
-        init();
     }
 
     public VibrationData(int maxDataSize) {
-        super();
         mMaxSize = maxDataSize;
-        init();
     }
 
-    private void init() {
-        for (int i = 0; i < mMaxSize; i++) {
-            mData.add(0.0);
+    private void init(double initVal) {
+        int size = mData.size();
+        for (int i = 0; i < mMaxSize - size; i++) {
+            mData.add(initVal);
         }
     }
 
     public boolean add(double newData) {
+        if (mData.size() < mMaxSize) {
+            init(filter(newData));
+        }
         checkExpired();
         return mData.add(filter(newData));
     }
@@ -58,7 +59,6 @@ public class VibrationData {
     }
 
     private double filter(double newData) {
-
-        return (double) ((int) (newData * 10));
+        return newData;
     }
 }
