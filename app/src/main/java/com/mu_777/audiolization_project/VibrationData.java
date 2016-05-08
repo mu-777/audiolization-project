@@ -27,6 +27,9 @@ public class VibrationData {
     }
 
     private void init() {
+        for (int i = 0; i < mMaxSize; i++) {
+            mData.add(0.0);
+        }
     }
 
     public boolean add(double newData) {
@@ -35,9 +38,7 @@ public class VibrationData {
     }
 
     private void checkExpired() {
-        while (mData.size() >= mMaxSize) {
-            mData.remove(0);
-        }
+        mData.remove(0);
     }
 
     public ArrayList<Double> getDataArray() {
@@ -57,6 +58,7 @@ public class VibrationData {
     }
 
     private double filter(double newData) {
-        return newData;
+
+        return (double) ((int) (newData * 10));
     }
 }

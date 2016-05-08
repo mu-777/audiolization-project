@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 //REF: http://tb-lab.hatenablog.jp/entry/2015/02/14/210611
@@ -54,10 +55,10 @@ public class MainActivity extends ActionBarActivity {
         mAccelerometerManager = new AccelerometerManager(mSensorManager);
 
         // AudioRecordの作成
-        audioRec = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                SAMPLING_RATE, AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, bufSize * 2);
-        audioRec.startRecording();
+//        audioRec = new AudioRecord(MediaRecorder.AudioSource.MIC,
+//                SAMPLING_RATE, AudioFormat.CHANNEL_IN_MONO,
+//                AudioFormat.ENCODING_PCM_16BIT, bufSize * 2);
+//        audioRec.startRecording();
         bIsRecording = true;
 
         //フーリエ解析スレッド
@@ -104,12 +105,30 @@ public class MainActivity extends ActionBarActivity {
 //                // 録音停止
 //                audioRec.stop();
 //                audioRec.release();
+
                 while (bIsRecording) {
                     ArrayList<Double> accelDataList;
                     accelDataList = mAccelerometerManager.getAccelerometerDataList();
-                    Log.d(TAG, "test");
-//                    Log.d(TAG, Double.toString(accelDataList.size()));
 
+                    int dataSize = accelDataList.size();
+                    FFT4g2 fft = new FFT4g2(dataSize);
+                    Double[] fftData = accelDataList.toArray(new Double[0]);
+                    fft.rdft(1, fftData);
+
+                    double[] dbfs = new double[dataSize / 2];
+                    double max_db = -120d;
+                    int max_i = 0;
+                    for (int i = 0; i < dataSize; i += 2) {
+                        dbfs[i / 2] = (int) (20 * Math.log10(Math.sqrt(Math.pow(fftData[i], 2)
+                                + Math.pow(fftData[i + 1], 2)) / dB_baseline));
+                        if (max_db < dbfs[i / 2]) {
+                            max_db = dbfs[i / 2];
+                            max_i = i / 2;
+                        }
+                    }
+
+                    //音量が最大の周波数と，その音量を表示
+                    Log.d(TAG, "  Size: " + dataSize +"  Top: " + accelDataList.get(0) +"  frequency:" + resol * max_i + "[Hz]  volume: " + max_db + "[dB]");
                 }
 
             }

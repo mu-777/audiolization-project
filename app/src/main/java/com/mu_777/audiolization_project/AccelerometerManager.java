@@ -15,7 +15,7 @@ import java.util.List;
 public class AccelerometerManager implements SensorEventListener {
     private static final String TAG = "AccelerometerManager";
 
-    private final int DATA_SIZE = 10;
+    private final int DATA_SIZE = 256;
     private VibrationData mVibrationData;
 
     public AccelerometerManager(SensorManager manager) {
