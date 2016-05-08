@@ -5,6 +5,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
 public class AccelerometerManager implements SensorEventListener {
     private static final String TAG = "AccelerometerManager";
 
-    private final int DATA_SIZE = 512;
+    private final int DATA_SIZE = 10;
     private VibrationData mVibrationData;
 
     public AccelerometerManager(SensorManager manager) {
@@ -45,7 +46,7 @@ public class AccelerometerManager implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
-    public double[] getAccelerometerDataList() {
-        return mVibrationData.getDataList();
+    public ArrayList<Double> getAccelerometerDataList() {
+        return mVibrationData.getDataArray();
     }
 }

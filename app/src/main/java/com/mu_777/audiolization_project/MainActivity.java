@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.List;
 
 //REF: http://tb-lab.hatenablog.jp/entry/2015/02/14/210611
@@ -104,9 +105,10 @@ public class MainActivity extends ActionBarActivity {
 //                audioRec.stop();
 //                audioRec.release();
                 while (bIsRecording) {
-                    double[] accelDataList;
+                    ArrayList<Double> accelDataList;
                     accelDataList = mAccelerometerManager.getAccelerometerDataList();
-//                    Log.d(TAG, Double.toString(accelDataList[0]));
+                    Log.d(TAG, "test");
+//                    Log.d(TAG, Double.toString(accelDataList.size()));
 
                 }
 

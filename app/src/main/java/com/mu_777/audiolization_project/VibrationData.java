@@ -1,5 +1,7 @@
 package com.mu_777.audiolization_project;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -8,8 +10,9 @@ import java.util.Iterator;
  */
 public class VibrationData {
 
+    private static final String TAG = "VibrationData";
+
     private ArrayList<Double> mData = new ArrayList<Double>();
-    ;
     private int mMaxSize = 1024;
 
     public VibrationData() {
@@ -37,10 +40,16 @@ public class VibrationData {
         }
     }
 
+    public ArrayList<Double> getDataArray() {
+        return mData;
+    }
+
     public double[] getDataList() {
         double[] ret = new double[mMaxSize];
         Iterator<Double> itr = mData.iterator();
+
         for (int i = 0; i < mMaxSize; i++) {
+            Log.d(TAG, Boolean.toString(itr.hasNext()));
             double val = itr.hasNext() ? itr.next() : 0.0;
             ret[i] = val;
         }
