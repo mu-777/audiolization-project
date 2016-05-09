@@ -35,11 +35,22 @@ public class AccelerometerManager implements SensorEventListener {
     }
 
     private double filter(float[] vals) {
+//        return sum3DAccel(vals);
+        return zAccel(vals);
+    }
+
+    private double sum3DAccel(float[] vals) {
         float gx = vals[0];
         float gy = vals[1];
         float gz = vals[2];
         return Math.sqrt(gx * gx + gy * gy + gz * gz);
     }
+
+    private double zAccel(float[] vals) {
+        float gz = vals[2];
+        return (double) ((int) (gz * 10));
+    }
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {

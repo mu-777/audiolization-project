@@ -1,28 +1,32 @@
 package com.mu_777.audiolization_project;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.hardware.SensorManager;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.mu_777.audiolization_project.fft.FFT4g2;
+import com.mu_777.audiolization_project.renderers.BarGraphRenderer;
 
 import java.util.ArrayList;
 
 //REF: http://tb-lab.hatenablog.jp/entry/2015/02/14/210611
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
 
-    SensorManager mSensorManager;
-    AccelerometerManager mAccelerometerManager;
+    private SensorManager mSensorManager;
+    private VisualizerView mVisualizerView;
 
     boolean mFftProcessingFlag = false;
-    int bufSize;
     Thread fft;
 
     @Override
@@ -34,53 +38,19 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mAccelerometerManager = new AccelerometerManager(mSensorManager);
-
-        mFftProcessingFlag = true;
-
-        //フーリエ解析スレッド
-        fft = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (mFftProcessingFlag) {
-                    ArrayList<Double> accelDataList;
-                    accelDataList = mAccelerometerManager.getAccelerometerDataList();
-
-                    int dataSize = accelDataList.size();
-                    FFT4g2 fft = new FFT4g2(dataSize);
-                    Double[] fftData = accelDataList.toArray(new Double[0]);
-                    fft.rdft(1, fftData);
-
-                    double[] dbfs = new double[dataSize / 2];
-                    double max_db = -120d;
-                    int max_i = 0;
-                    for (int i = 0; i < dataSize; i += 2) {
-                        dbfs[i / 2] = (int) (20 * Math.log10(Math.sqrt(Math.pow(fftData[i], 2)
-                                + Math.pow(fftData[i + 1], 2)) / dB_baseline));
-                        if (max_db < dbfs[i / 2]) {
-                            max_db = dbfs[i / 2];
-                            max_i = i / 2;
-                        }
-                    }
-
-                    //音量が最大の周波数と，その音量を表示
-                    Log.d(TAG, "  Size: " + dataSize + "  Top: " + accelDataList.get(0));
-//                    Log.d(TAG, "  frequency:" + resol * max_i + "[Hz]  volume: " + max_db + "[dB]");
-                }
-
-            }
-        });
-        //スレッドのスタート
-        fft.start();
+        init();
     }
-
 
     @Override
     protected void onPause() {
+        cleanUp();
         super.onPause();
-        mAccelerometerManager.stopSensor(mSensorManager);
+    }
+
+    @Override
+    protected void onDestroy() {
+        cleanUp();
+        super.onDestroy();
     }
 
     @Override
@@ -103,5 +73,42 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void init() {
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mVisualizerView = (VisualizerView) findViewById(R.id.visualizerView);
+        mVisualizerView.linkToSensor(mSensorManager);
+        addBarGraphRenderers();
+    }
+
+    private void cleanUp() {
+        mVisualizerView.release();
+    }
+
+    // Methods for adding renderers to visualizer
+    private void addBarGraphRenderers() {
+        Paint paint = new Paint();
+        paint.setStrokeWidth(50f);
+        paint.setAntiAlias(true);
+        paint.setColor(Color.argb(200, 56, 138, 252));
+        BarGraphRenderer barGraphRendererBottom = new BarGraphRenderer(16, paint, false);
+        mVisualizerView.addRenderer(barGraphRendererBottom);
+
+        Paint paint2 = new Paint();
+        paint2.setStrokeWidth(12f);
+        paint2.setAntiAlias(true);
+        paint2.setColor(Color.argb(200, 181, 111, 233));
+        BarGraphRenderer barGraphRendererTop = new BarGraphRenderer(4, paint2, true);
+        mVisualizerView.addRenderer(barGraphRendererTop);
+    }
+
+
+    public void barPressed(View view) {
+        addBarGraphRenderers();
+    }
+
+    public void clearPressed(View view) {
+        mVisualizerView.clearRenderers();
     }
 }

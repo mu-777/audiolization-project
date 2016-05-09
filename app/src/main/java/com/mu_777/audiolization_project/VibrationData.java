@@ -15,7 +15,6 @@ public class VibrationData {
     private ArrayList<Double> mData = new ArrayList<Double>();
     private int mMaxSize = 1024;
 
-
     public VibrationData() {
     }
 

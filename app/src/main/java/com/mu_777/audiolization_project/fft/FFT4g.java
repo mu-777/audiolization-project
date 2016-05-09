@@ -1,6 +1,6 @@
 //http://hp.vector.co.jp/authors/VA046927/fft4gjava.html
 
-package com.mu_777.audiolization_project;
+package com.mu_777.audiolization_project.fft;
 
 
 import static java.lang.Math.atan;

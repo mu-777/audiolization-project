@@ -1,6 +1,6 @@
 //http://hp.vector.co.jp/authors/VA046927/fft4gjava.html
 
-package com.mu_777.audiolization_project;
+package com.mu_777.audiolization_project.fft;
 
 
 import static java.lang.Math.atan;
@@ -12,7 +12,7 @@ public class FFT4g2 {
     private Double[] w;
     private int n;
 
-    FFT4g2(int n) {
+    public FFT4g2(int n) {
         this.n = n;
         ip = new int[2 + (int) Math.sqrt((double) n / 2.0) + 1];
         w = new Double[n / 2];
