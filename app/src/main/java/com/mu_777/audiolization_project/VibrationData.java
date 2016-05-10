@@ -50,7 +50,6 @@ public class VibrationData {
         Iterator<Double> itr = mData.iterator();
 
         for (int i = 0; i < mMaxSize; i++) {
-            Log.d(TAG, Boolean.toString(itr.hasNext()));
             double val = itr.hasNext() ? itr.next() : 0.0;
             ret[i] = val;
         }
