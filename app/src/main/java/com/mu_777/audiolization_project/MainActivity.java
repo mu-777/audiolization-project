@@ -26,9 +26,6 @@ public class MainActivity extends Activity {
     private SensorManager mSensorManager;
     private VisualizerView mVisualizerView;
 
-    boolean mFftProcessingFlag = false;
-    Thread fft;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
