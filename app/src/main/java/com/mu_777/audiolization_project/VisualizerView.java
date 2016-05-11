@@ -107,7 +107,7 @@ public class VisualizerView extends View {
         int size = fftData.length;
         byte[] fftBytes = new byte[size];
         for (int i = 1; i < size; i++) {
-            fftBytes[i] = (byte) Double.doubleToLongBits(fftData[i]);
+            fftBytes[i] = fftData[i].byteValue();
         }
 
         invalidate();

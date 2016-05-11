@@ -48,7 +48,8 @@ public class AccelerometerManager implements SensorEventListener {
 
     private double zAccel(float[] vals) {
         float gz = vals[2];
-        return (double) ((int) (gz * 10));
+        return (double) gz;
+//        return (double) ((int) (gz * 10));
     }
 
 
