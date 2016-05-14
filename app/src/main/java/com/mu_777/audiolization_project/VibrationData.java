@@ -14,22 +14,32 @@ public class VibrationData {
 
     private ArrayList<Double> mData = new ArrayList<Double>();
     private int mMaxSize = 1024;
+    private boolean TEST_FLAG = false;
 
     public VibrationData() {
+        init(0.0);
     }
 
     public VibrationData(int maxDataSize) {
         mMaxSize = maxDataSize;
+        init(0.0);
     }
 
     private void init(double initVal) {
         int size = mData.size();
         for (int i = 0; i < mMaxSize - size; i++) {
-            mData.add(initVal);
+            if (TEST_FLAG) {
+                mData.add(getTestData(i));
+            } else {
+                mData.add(initVal);
+            }
         }
     }
 
     public boolean add(double newData) {
+        if (TEST_FLAG) {
+            return true;
+        }
         if (mData.size() < mMaxSize) {
             init(filter(newData));
         }
@@ -45,6 +55,10 @@ public class VibrationData {
         return mData;
     }
 
+    public int getDataSize() {
+        return mData.size();
+    }
+
     public double[] getDataList() {
         double[] ret = new double[mMaxSize];
         Iterator<Double> itr = mData.iterator();
@@ -58,5 +72,12 @@ public class VibrationData {
 
     private double filter(double newData) {
         return newData;
+    }
+
+    private double getTestData(int idx) {
+        double a = 10.0;
+        double f = 2.0;
+        double ret = a * Math.sin(((double) idx / (double) mMaxSize) * 2.0 * Math.PI * f);
+        return ret;
     }
 }
