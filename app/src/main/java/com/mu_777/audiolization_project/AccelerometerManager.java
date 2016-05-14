@@ -15,7 +15,7 @@ import java.util.List;
 public class AccelerometerManager implements SensorEventListener {
     private static final String TAG = "AccelerometerManager";
 
-    private final int DATA_SIZE = 256;
+    private final int DATA_SIZE = 1024;
     private VibrationData mVibrationData;
 
     public AccelerometerManager(SensorManager manager) {
@@ -35,8 +35,15 @@ public class AccelerometerManager implements SensorEventListener {
     }
 
     private double filter(float[] vals) {
-//        return sum3DAccel(vals);
-        return zAccel(vals);
+        double targetData = zAccel(vals);
+//        double targetData = sum3DAccel(vals);
+
+        return lowPassFilter(targetData);
+    }
+
+    private double lowPassFilter(double newVal) {
+        double newDataRate = 1.0;
+        return newDataRate * newVal + (1.0 - newDataRate) * mVibrationData.getDataArray().get(mVibrationData.getDataSize() - 1);
     }
 
     private double sum3DAccel(float[] vals) {
@@ -48,7 +55,8 @@ public class AccelerometerManager implements SensorEventListener {
 
     private double zAccel(float[] vals) {
         float gz = vals[2];
-        return (double) ((int) (gz * 10));
+        return (double) gz;
+//        return (double) ((int) (gz * 10));
     }
 
 
