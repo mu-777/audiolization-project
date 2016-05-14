@@ -18,6 +18,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import com.mu_777.audiolization_project.types.FFTData;
+import com.mu_777.audiolization_project.types.RawData;
+
 
 public class LineRenderer extends Renderer {
     private Paint mPaint;
@@ -36,7 +39,7 @@ public class LineRenderer extends Renderer {
     }
 
     @Override
-    public void onRender(Canvas canvas, AudioData data, Rect rect) {
+    public void onRender(Canvas canvas, RawData data, Rect rect) {
         if (mCycleColor) {
             cycleColor();
         }
@@ -44,11 +47,9 @@ public class LineRenderer extends Renderer {
         // Calculate points for line
         for (int i = 0; i < data.bytes.length - 1; i++) {
             mPoints[i * 4] = rect.width() * i / (data.bytes.length - 1);
-            mPoints[i * 4 + 1] = rect.height() / 2
-                    + ((byte) (data.bytes[i] + 128)) * (rect.height() / 3) / 128;
+            mPoints[i * 4 + 1] = rect.height() / 2 + ((byte) (data.bytes[i] + 128)) * (rect.height() / 3) / 128;
             mPoints[i * 4 + 2] = rect.width() * (i + 1) / (data.bytes.length - 1);
-            mPoints[i * 4 + 3] = rect.height() / 2
-                    + ((byte) (data.bytes[i + 1] + 128)) * (rect.height() / 3) / 128;
+            mPoints[i * 4 + 3] = rect.height() / 2 + ((byte) (data.bytes[i + 1] + 128)) * (rect.height() / 3) / 128;
         }
 
         // Calc amplitude for this waveform

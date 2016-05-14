@@ -5,7 +5,7 @@
  * http://creativecommons.org/licenses/MIT/
  */
 
-package com.mu_777.audiolization_project.fft;
+package com.mu_777.audiolization_project.types;
 
 // Data class to explicitly indicate that these bytes are the FFT of audio data
 public class FFTData {

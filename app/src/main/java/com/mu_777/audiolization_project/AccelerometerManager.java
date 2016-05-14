@@ -69,7 +69,11 @@ public class AccelerometerManager implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
-    public ArrayList<Double> getAccelerometerDataList() {
+    public ArrayList<Double> getAccelDataArr() {
         return mVibrationData.getDataArray();
+    }
+
+    public VibrationData getVibrationData() {
+        return mVibrationData;
     }
 }

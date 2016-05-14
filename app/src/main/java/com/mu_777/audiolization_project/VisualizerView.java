@@ -17,14 +17,14 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.hardware.SensorManager;
-import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.mu_777.audiolization_project.fft.FFT4g2;
-import com.mu_777.audiolization_project.fft.FFTData;
+import com.mu_777.audiolization_project.types.FFTData;
 import com.mu_777.audiolization_project.renderers.Renderer;
+import com.mu_777.audiolization_project.types.RawData;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -98,7 +98,7 @@ public class VisualizerView extends View {
     }
 
     public FFTData updateVisualizerFFT() {
-        ArrayList<Double> accelDataList = mAccelerometerManager.getAccelerometerDataList();
+        ArrayList<Double> accelDataList = mAccelerometerManager.getAccelDataArr();
         int dataSize = accelDataList.size();
 
         FFT4g2 fft = new FFT4g2(dataSize);
@@ -139,7 +139,12 @@ public class VisualizerView extends View {
             mCanvas = new Canvas(mCanvasBitmap);
         }
 
-        FFTData fftData = updateVisualizerFFT();
+        VibrationData vibrationData = mAccelerometerManager.getVibrationData();
+        RawData rawData = vibrationData.getRawData();
+        for (Renderer r : mRenderers) {
+            r.render(mCanvas, rawData, mRect);
+        }
+        FFTData fftData = vibrationData.getFFTData();
         for (Renderer r : mRenderers) {
             r.render(mCanvas, fftData, mRect);
         }

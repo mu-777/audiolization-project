@@ -9,7 +9,8 @@ package com.mu_777.audiolization_project.renderers;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import com.mu_777.audiolization_project.fft.FFTData;
+import com.mu_777.audiolization_project.types.FFTData;
+import com.mu_777.audiolization_project.types.RawData;
 
 
 abstract public class Renderer {
@@ -20,17 +21,29 @@ abstract public class Renderer {
     public Renderer() {
     }
 
+    abstract public void onRender(Canvas canvas, RawData data, Rect rect);
+
     abstract public void onRender(Canvas canvas, FFTData data, Rect rect);
+
 
     /**
      * Render the FFT data onto the canvas
+     *
      * @param canvas - Canvas to draw on
-     * @param data - Data to render
-     * @param rect - Rect to render into
+     * @param data   - Data to render
+     * @param rect   - Rect to render into
      */
     final public void render(Canvas canvas, FFTData data, Rect rect) {
         if (mFFTPoints == null || mFFTPoints.length < data.bytes.length * 4) {
             mFFTPoints = new float[data.bytes.length * 4];
+        }
+
+        onRender(canvas, data, rect);
+    }
+
+    final public void render(Canvas canvas, RawData data, Rect rect) {
+        if (mPoints == null || mPoints.length < data.bytes.length * 4) {
+            mPoints = new float[data.bytes.length * 4];
         }
 
         onRender(canvas, data, rect);
