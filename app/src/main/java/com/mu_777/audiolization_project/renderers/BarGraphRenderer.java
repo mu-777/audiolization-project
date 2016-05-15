@@ -9,12 +9,15 @@ package com.mu_777.audiolization_project.renderers;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.mu_777.audiolization_project.types.FFTData;
 import com.mu_777.audiolization_project.types.RawData;
 
 
 public class BarGraphRenderer extends Renderer {
+    private static final String TAG = "BarGraphRenderer";
+
     private int mDivisions;
     private Paint mPaint;
     private boolean mTopFlag;
@@ -43,7 +46,8 @@ public class BarGraphRenderer extends Renderer {
         for (int i = 0; i < data.bytes.length / mDivisions; i++) {
             mPoints[i * 4] = i * 4 * mDivisions;
             mPoints[i * 4 + 2] = i * 4 * mDivisions;
-            int height = (int) data.bytes[mDivisions * i];
+            int height = (int) Math.abs(data.bytes[mDivisions * i]);
+            Log.d(TAG, String.valueOf(height));
             if (mTopFlag) {
                 mPoints[i * 4 + 1] = 0;
                 mPoints[i * 4 + 3] = height;
@@ -53,8 +57,7 @@ public class BarGraphRenderer extends Renderer {
             }
         }
 
-        canvas.drawLines(mFFTPoints, mPaint);
-
+        canvas.drawLines(mPoints, mPaint);
     }
 
     @Override

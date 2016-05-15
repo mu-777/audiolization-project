@@ -91,7 +91,7 @@ public class MainActivity extends Activity {
     // Methods for adding renderers to visualizer
     private void addBarGraphRenderers() {
         Paint paint = new Paint();
-        paint.setStrokeWidth(50f);
+        paint.setStrokeWidth(12f);
         paint.setAntiAlias(true);
         paint.setColor(Color.argb(200, 56, 138, 252));
         BarGraphRenderer barGraphRendererBottom = new BarGraphRenderer(4, paint, false, false);
