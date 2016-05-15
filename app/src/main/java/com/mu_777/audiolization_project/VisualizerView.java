@@ -45,14 +45,17 @@ public class VisualizerView extends View {
 
     private Paint mFlashPaint = new Paint();
     private Paint mFadePaint = new Paint();
+    Bitmap mCanvasBitmap;
+    Canvas mCanvas;
+    boolean mFlash = false;
 
     private SensorManager mSensorManager;
     private AccelerometerManager mAccelerometerManager;
 
-    Bitmap mCanvasBitmap;
-    Canvas mCanvas;
+    private int mDataSize = 256;
 
-    boolean mFlash = false;
+    private SoundGenerator mSoundGenerator;
+
 
     public VisualizerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
@@ -73,12 +76,14 @@ public class VisualizerView extends View {
         mFadePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
 
         mRenderers = new HashSet<Renderer>();
+
+        mSoundGenerator = new SoundGenerator(mDataSize);
+        mSoundGenerator.init();
     }
 
     public void linkToSensor(SensorManager sensorMgr) {
         mSensorManager = sensorMgr;
-
-        mAccelerometerManager = new AccelerometerManager(mSensorManager);
+        mAccelerometerManager = new AccelerometerManager(mSensorManager, mDataSize);
     }
 
     public void addRenderer(Renderer renderer) {
@@ -91,18 +96,10 @@ public class VisualizerView extends View {
         mRenderers.clear();
     }
 
-    /**
-     * Call to release the resources used by VisualizerView. Like with the
-     * MediaPlayer it is good practice to call this method
-     */
     public void release() {
         mAccelerometerManager.stopSensor(mSensorManager);
     }
 
-    /**
-     * Call this to make the visualizer flash. Useful for flashing at the start
-     * of a song/loop etc...
-     */
     public void flash() {
         mFlash = true;
         invalidate();
@@ -122,12 +119,24 @@ public class VisualizerView extends View {
         for (Renderer r : mRenderers) {
             r.render(mCanvas, fftData, mRect);
         }
+
+
     }
 
-    private void fadeOldGraphs(){
+    private void fadeOldGraphs() {
         // Fade out old contents
         mCanvas.drawPaint(mFadePaint);
     }
+
+    private void playSound() {
+        VibrationData vibrationData = mAccelerometerManager.getVibrationData();
+//        RawData rawData = vibrationData.getRawData();
+//        mSoundGenerator.playSoundBytes(rawData.bytes);
+
+        FFTData fftData = vibrationData.getFFTData();
+        mSoundGenerator.playSoundFrequency(fftData.getMaxFrequency(mAccelerometerManager.getSamplingRateHz()));
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -144,6 +153,7 @@ public class VisualizerView extends View {
         }
 
         renderGraphs();
+        playSound();
         fadeOldGraphs();
 
 

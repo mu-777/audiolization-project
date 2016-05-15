@@ -15,16 +15,24 @@ import java.util.List;
 public class AccelerometerManager implements SensorEventListener {
     private static final String TAG = "AccelerometerManager";
 
-    private final int DATA_SIZE = 256;
+    private int mDataSize;
     private VibrationData mVibrationData;
+    private SamplingRateCalculator mSamplingRateCalculator;
 
-    public AccelerometerManager(SensorManager manager) {
+    public AccelerometerManager(SensorManager manager, int dataSize) {
+        mDataSize = dataSize;
+
         List<Sensor> sensors = manager.getSensorList(Sensor.TYPE_ACCELEROMETER);
         if (sensors.size() > 0) {
             manager.registerListener(this, sensors.get(0), SensorManager.SENSOR_DELAY_FASTEST);
         }
+        mVibrationData = new VibrationData(mDataSize);
+        mSamplingRateCalculator = new SamplingRateCalculator(1000);
 
-        mVibrationData = new VibrationData(DATA_SIZE);
+    }
+
+    public AccelerometerManager(SensorManager manager) {
+        this(manager, 512);
     }
 
     public void stopSensor(SensorManager manager) {
@@ -62,6 +70,7 @@ public class AccelerometerManager implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        mSamplingRateCalculator.update();
         mVibrationData.add(filter(event.values));
     }
 
@@ -75,5 +84,9 @@ public class AccelerometerManager implements SensorEventListener {
 
     public VibrationData getVibrationData() {
         return mVibrationData;
+    }
+
+    public double getSamplingRateHz() {
+        return mSamplingRateCalculator.getSamplingRateHz();
     }
 }
