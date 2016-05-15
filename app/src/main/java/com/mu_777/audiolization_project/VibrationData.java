@@ -16,11 +16,11 @@ public class VibrationData {
 
     private FFT4g2 mFft;
     private ArrayList<Double> mData = new ArrayList<Double>();
-    private int mMaxSize = 1024;
+    private int mMaxSize;
     private boolean TEST_FLAG = false;
 
     public VibrationData() {
-        init(0.0);
+        this(1024);
     }
 
     public VibrationData(int maxDataSize) {

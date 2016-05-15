@@ -25,6 +25,7 @@ import com.mu_777.audiolization_project.fft.FFT4g2;
 import com.mu_777.audiolization_project.types.FFTData;
 import com.mu_777.audiolization_project.renderers.Renderer;
 import com.mu_777.audiolization_project.types.RawData;
+import com.mu_777.audiolization_project.MyApplication;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,7 +41,6 @@ public class VisualizerView extends View {
     private static final String TAG = "VisualizerView";
 
     private Rect mRect = new Rect();
-
     private Set<Renderer> mRenderers;
 
     private Paint mFlashPaint = new Paint();
@@ -52,6 +52,7 @@ public class VisualizerView extends View {
     Bitmap mCanvasBitmap;
     Canvas mCanvas;
 
+    boolean mFlash = false;
 
     public VisualizerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
@@ -76,6 +77,7 @@ public class VisualizerView extends View {
 
     public void linkToSensor(SensorManager sensorMgr) {
         mSensorManager = sensorMgr;
+
         mAccelerometerManager = new AccelerometerManager(mSensorManager);
     }
 
@@ -96,25 +98,6 @@ public class VisualizerView extends View {
     public void release() {
         mAccelerometerManager.stopSensor(mSensorManager);
     }
-
-    public FFTData updateVisualizerFFT() {
-        ArrayList<Double> accelDataList = mAccelerometerManager.getAccelDataArr();
-        int dataSize = accelDataList.size();
-
-        FFT4g2 fft = new FFT4g2(dataSize);
-        Double[] fftData = accelDataList.toArray(new Double[0]);
-        fft.rdft(1, fftData);
-        int size = fftData.length;
-        byte[] fftBytes = new byte[size];
-        for (int i = 1; i < size; i++) {
-            fftBytes[i] = fftData[i].byteValue();
-        }
-
-        invalidate();
-        return new FFTData(fftBytes);
-    }
-
-    boolean mFlash = false;
 
     /**
      * Call this to make the visualizer flash. Useful for flashing at the start
