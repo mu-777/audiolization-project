@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.mu_777.audiolization_project.fft.FFT4g2;
 import com.mu_777.audiolization_project.renderers.BarGraphRenderer;
+import com.mu_777.audiolization_project.renderers.LineRenderer;
 
 import java.util.ArrayList;
 
@@ -77,6 +78,7 @@ public class MainActivity extends Activity {
         mVisualizerView = (VisualizerView) findViewById(R.id.visualizerView);
         mVisualizerView.linkToSensor(mSensorManager);
         addBarGraphRenderers();
+        addLineRenderer();
     }
 
     private void cleanUp() {
@@ -86,23 +88,40 @@ public class MainActivity extends Activity {
     // Methods for adding renderers to visualizer
     private void addBarGraphRenderers() {
         Paint paint = new Paint();
-        paint.setStrokeWidth(50f);
+        paint.setStrokeWidth(12f);
         paint.setAntiAlias(true);
         paint.setColor(Color.argb(200, 56, 138, 252));
-        BarGraphRenderer barGraphRendererBottom = new BarGraphRenderer(16, paint, false);
+        BarGraphRenderer barGraphRendererBottom = new BarGraphRenderer(4, paint, false, false);
         mVisualizerView.addRenderer(barGraphRendererBottom);
 
         Paint paint2 = new Paint();
         paint2.setStrokeWidth(12f);
         paint2.setAntiAlias(true);
         paint2.setColor(Color.argb(200, 181, 111, 233));
-        BarGraphRenderer barGraphRendererTop = new BarGraphRenderer(4, paint2, true);
+        BarGraphRenderer barGraphRendererTop = new BarGraphRenderer(4, paint2, true, true);
         mVisualizerView.addRenderer(barGraphRendererTop);
     }
 
+    private void addLineRenderer() {
+        Paint linePaint = new Paint();
+        linePaint.setStrokeWidth(1f);
+        linePaint.setAntiAlias(true);
+        linePaint.setColor(Color.argb(88, 0, 128, 255));
+
+        Paint lineFlashPaint = new Paint();
+        lineFlashPaint.setStrokeWidth(5f);
+        lineFlashPaint.setAntiAlias(true);
+        lineFlashPaint.setColor(Color.argb(188, 255, 255, 255));
+        LineRenderer lineRenderer = new LineRenderer(linePaint, lineFlashPaint, true);
+        mVisualizerView.addRenderer(lineRenderer);
+    }
 
     public void barPressed(View view) {
         addBarGraphRenderers();
+    }
+
+    public void linePressed(View view) {
+        addLineRenderer();
     }
 
     public void clearPressed(View view) {

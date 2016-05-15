@@ -15,13 +15,13 @@ import java.util.List;
 public class AccelerometerManager implements SensorEventListener {
     private static final String TAG = "AccelerometerManager";
 
-    private final int DATA_SIZE = 1024;
+    private final int DATA_SIZE = 256;
     private VibrationData mVibrationData;
 
     public AccelerometerManager(SensorManager manager) {
         List<Sensor> sensors = manager.getSensorList(Sensor.TYPE_ACCELEROMETER);
         if (sensors.size() > 0) {
-            manager.registerListener(this, sensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+            manager.registerListener(this, sensors.get(0), SensorManager.SENSOR_DELAY_FASTEST);
         }
 
         mVibrationData = new VibrationData(DATA_SIZE);
@@ -42,7 +42,7 @@ public class AccelerometerManager implements SensorEventListener {
     }
 
     private double lowPassFilter(double newVal) {
-        double newDataRate = 1.0;
+        double newDataRate = 0.8;
         return newDataRate * newVal + (1.0 - newDataRate) * mVibrationData.getDataArray().get(mVibrationData.getDataSize() - 1);
     }
 
@@ -55,7 +55,7 @@ public class AccelerometerManager implements SensorEventListener {
 
     private double zAccel(float[] vals) {
         float gz = vals[2];
-        return (double) gz;
+        return (double) gz * 10.0;
 //        return (double) ((int) (gz * 10));
     }
 
@@ -69,7 +69,11 @@ public class AccelerometerManager implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
-    public ArrayList<Double> getAccelerometerDataList() {
+    public ArrayList<Double> getAccelDataArr() {
         return mVibrationData.getDataArray();
+    }
+
+    public VibrationData getVibrationData() {
+        return mVibrationData;
     }
 }
