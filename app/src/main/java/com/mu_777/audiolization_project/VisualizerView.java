@@ -140,11 +140,15 @@ public class VisualizerView extends View {
         }
 
         VibrationData vibrationData = mAccelerometerManager.getVibrationData();
+
         RawData rawData = vibrationData.getRawData();
+        invalidate();
         for (Renderer r : mRenderers) {
             r.render(mCanvas, rawData, mRect);
         }
+
         FFTData fftData = vibrationData.getFFTData();
+        invalidate();
         for (Renderer r : mRenderers) {
             r.render(mCanvas, fftData, mRect);
         }
