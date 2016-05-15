@@ -69,7 +69,7 @@ public class VisualizerView extends View {
 
     private void init() {
         mFlashPaint.setColor(Color.argb(122, 255, 255, 255));
-        mFadePaint.setColor(Color.argb(238, 255, 255, 255)); // Adjust alpha to change how quickly the image fades
+        mFadePaint.setColor(Color.argb(238, 255, 255, 0)); // Adjust alpha to change how quickly the image fades
         mFadePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
 
         mRenderers = new HashSet<Renderer>();
@@ -108,6 +108,27 @@ public class VisualizerView extends View {
         invalidate();
     }
 
+    private void renderGraphs() {
+        VibrationData vibrationData = mAccelerometerManager.getVibrationData();
+
+        RawData rawData = vibrationData.getRawData();
+        invalidate();
+        for (Renderer r : mRenderers) {
+            r.render(mCanvas, rawData, mRect);
+        }
+
+        FFTData fftData = vibrationData.getFFTData();
+        invalidate();
+        for (Renderer r : mRenderers) {
+            r.render(mCanvas, fftData, mRect);
+        }
+    }
+
+    private void fadeOldGraphs(){
+        // Fade out old contents
+        mCanvas.drawPaint(mFadePaint);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -122,22 +143,9 @@ public class VisualizerView extends View {
             mCanvas = new Canvas(mCanvasBitmap);
         }
 
-        VibrationData vibrationData = mAccelerometerManager.getVibrationData();
+        renderGraphs();
+        fadeOldGraphs();
 
-        RawData rawData = vibrationData.getRawData();
-        invalidate();
-        for (Renderer r : mRenderers) {
-            r.render(mCanvas, rawData, mRect);
-        }
-
-        FFTData fftData = vibrationData.getFFTData();
-        invalidate();
-        for (Renderer r : mRenderers) {
-            r.render(mCanvas, fftData, mRect);
-        }
-
-        // Fade out old contents
-        mCanvas.drawPaint(mFadePaint);
 
         if (mFlash) {
             mFlash = false;
